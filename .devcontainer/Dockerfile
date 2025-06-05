@@ -7,17 +7,9 @@ RUN apt-get update && \
     wget \
     curl \
     git \
-    fish \
-    openssh-server 
+    fish
 
 # Remove welcome message Fish
 RUN fish -c "set -U fish_greeting"
 
-# Setup openssh-server
-RUN mkdir /var/run/sshd && \
-    echo "root:password" | chpasswd && \
-    echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
-
-EXPOSE 22
-
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/bin/fish"]
