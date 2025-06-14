@@ -41,6 +41,30 @@ interface CampusResponse {
 	}
 }
 
+interface EventResponse {
+	id: number,
+	name: string,
+	description: string,
+	location: string,
+	kind: string,
+	max_people: number,
+	nbr_susbcribers: number,
+	begin_at: string,
+	end_at: string,
+	campus_ids: number[],
+	cursus_ids: number[],
+	themes: {
+		created_at: string,
+		id: number,
+		name: string,
+		updated_at: string
+	}[],
+	waitlist: boolean,
+	prohibition_of_cancellation: number,
+	created_at: string,
+	updated_at: string
+}
+
 async function getToken(): Promise<string | undefined> {
 	const clientId = process.env.CLIENT_ID;
 	const clientSecret = process.env.CLIENT_SECRET;
@@ -80,6 +104,21 @@ async function getCampusId(token: string, campus_name: string): Promise<number |
 		);
 }
 
+async function getEvents(token: string, campus_id: number): Promise<EventResponse[] | undefined> {
+	return axios.get(`https://api.intra.42.fr/v2/campus/${campus_id}/events`, {
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	})
+		.then((response: AxiosResponse<EventResponse[]>) => {
+			return response.data;
+		})
+		.catch(error => {
+			console.error("Error retrieving events:", error);
+			return undefined;
+		});
+}
+
 async function main() {
 	const token = await getToken();
 	if (!token) {
@@ -92,6 +131,15 @@ async function main() {
 	if (!campusId) {
 		console.error("Campus ID not retrieved, check your token or campus name.");
 		return;
+	}
+	const dataEvents = await getEvents(token, campusId);
+	if (!dataEvents) {
+		console.error("Events not retrieved, check your token or campus ID.");
+		return;
+	} else {
+		dataEvents.forEach(event => {
+			console.log(`Event: ${event.name}`);
+		});
 	}
 }
 
