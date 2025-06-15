@@ -127,7 +127,7 @@ async function main() {
 	} else {
 		console.log("Token successfully retrieved:", token);
 	}
-	const campusId = await getCampusId(token, 'paris');
+	const campusId = await getCampusId(token, process.env.CAMPUS_NAME || "paris");
 	if (!campusId) {
 		console.error("Campus ID not retrieved, check your token or campus name.");
 		return;
