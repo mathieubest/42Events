@@ -108,6 +108,11 @@ async function getEvents(token: string, campus_id: number): Promise<EventRespons
 	return axios.get(`https://api.intra.42.fr/v2/campus/${campus_id}/events`, {
 		headers: {
 			Authorization: `Bearer ${token}`
+		},
+		params: {
+			'filter[future]': 'true',
+			'page[100]': '',
+			'sort': 'begin_at'
 		}
 	})
 		.then((response: AxiosResponse<EventResponse[]>) => {
